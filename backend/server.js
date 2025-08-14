@@ -6,6 +6,7 @@ import dotenv from 'dotenv';
 import productRoutes from './routes/productRoutes.js';
 import {sql} from './config/db.js';
 import {aj} from './lib/arcjet.js';
+import userRoutes from './routes/userRoutes.js';
 dotenv.config();
 
 
@@ -52,6 +53,7 @@ app.use(async (req,res,next) =>{
 
 
 app.use("/api/products",productRoutes);
+app.use("/api/users",userRoutes);
 
 async function initDb(params) {
     try{
@@ -64,6 +66,14 @@ async function initDb(params) {
       created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
     )
     `;
+
+    await sql`
+    CREATE TABLE IF NOT EXISTS users (
+      id SERIAL PRIMARY KEY,
+      username VARCHAR(255) NOT NULL,
+      email VARCHAR(255) NOT NULL UNIQUE,
+      created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    )`
     console.log("DATABASE INITIALIZED SUCCESSfullly")
     }catch(error){
         console.log("error",error);

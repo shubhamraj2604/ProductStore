@@ -2,6 +2,7 @@ import { useNavigate, useParams } from "react-router-dom";
 import { useProductStore } from "../store/useProduct";
 import { useEffect } from "react";
 import { ArrowLeftIcon, SaveIcon, Trash2Icon } from "lucide-react";
+import { useUser } from "@clerk/clerk-react";
 
 function ProductPage() {
   const {
@@ -60,7 +61,7 @@ function ProductPage() {
             className="size-full object-cover"
           />
         </div>
-
+        
         {/* PRODUCT FORM */}
         <div className="card bg-base-100 shadow-lg ">
           <div className="card-body">
@@ -103,7 +104,6 @@ function ProductPage() {
                 />
               </div>
 
-              {/* PRODUCT IMAGE URL */}
               <div className="form-control">
                 <label className="label">
                   <span className="label-text text-base font-medium">Image URL</span>

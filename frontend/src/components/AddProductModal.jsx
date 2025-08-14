@@ -57,6 +57,7 @@ function AddProductModal() {
               </div>
             </div>
 
+
             {/* PRODUCT IMAGE */}
             <div className="form-control">
               <label className="label">
@@ -99,6 +100,9 @@ function AddProductModal() {
           </div>
         </form>
       </div>
+
+      {/* TEST PRODUCTS */}
+   
 
       {/* BACKDROP */}
       <form method="dialog" className="modal-backdrop">

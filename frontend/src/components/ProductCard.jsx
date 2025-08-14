@@ -4,7 +4,9 @@ import { EditIcon, Trash2Icon , ShoppingCart } from 'lucide-react';
 import { useThemeStore } from '../store/useThemeStore';
 import { useProductStore } from '../store/useProduct';
 import { useCartStore } from '../store/useAddtoCart';
+import { useUser } from '@clerk/clerk-react';
 const ProductCard = ({product}) => {
+    const {user} = useUser();
     const {deleteProduct} = useProductStore();
     const {addToCart} = useCartStore();
   return (
@@ -23,7 +25,9 @@ const ProductCard = ({product}) => {
         <p className="text-2xl font-bold text-primary">${Number(product.price).toFixed(2)}</p>
 
         {/* Card Actions */}
-        <div className="card-actions justify-end mt-4">
+        {user?.publicMetadata?.role === "admin" ? (
+
+          <div className="card-actions justify-end mt-4">
             <Link to ={`/product/${product.id}`} className="btn btn-sm btn-info btn-outline">
             <EditIcon className="size-4" />
           </Link>
@@ -31,14 +35,18 @@ const ProductCard = ({product}) => {
           <button
             className="btn btn-sm btn-error btn-outline"
             onClick={() => deleteProduct(product.id)}
-          >
+            >
             <Trash2Icon className="size-4" />
           </button>
+          </div>
+          ) : (
 
+            <div className='flex justify-end'>
           <button className="btn btn-primary btn-sm btn-outline" onClick={() => addToCart(product)}>
             <ShoppingCart className = "size-4"/>
         </button>
         </div>
+          )}
       </div>
     </div>
   )

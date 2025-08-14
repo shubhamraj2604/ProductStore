@@ -22,7 +22,7 @@ const Hero = () => {
     document.getElementById("product-section")?.scrollIntoView({ behavior: "smooth" });
   }}
 >
-  Get Started
+  Explore Products
 </button>
     </div>
   </div>

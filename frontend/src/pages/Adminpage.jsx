@@ -6,7 +6,7 @@ import ProductCard from '../components/ProductCard';
 import { PackageIcon } from 'lucide-react';
 import AddProductModal from '../components/AddProductModal';
 // import { testProducts } from '../constants/test';
-const HomePage = () => {
+const Adminpage = () => {
   const {products , loading , error , fetchProducts} = useProductStore();
   
   useEffect(() =>{
@@ -66,4 +66,4 @@ const HomePage = () => {
   )
 }
 
-export default HomePage
+export default Adminpage

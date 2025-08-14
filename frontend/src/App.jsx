@@ -6,7 +6,6 @@ import ProductPage from './pages/ProductPage.jsx'
 import { useThemeStore } from './store/useThemeStore.js'
 import CartPage from './pages/CartPage.jsx'
 import { Toaster } from 'react-hot-toast'
-
 const App = () => {
   const {theme} = useThemeStore();
   return (
@@ -16,7 +15,6 @@ const App = () => {
       <Route path="/" element={<HomePage />}/>
       <Route path="/product/:id" element={<ProductPage />}/>
       <Route path="/cart" element={<CartPage />} />
-
       </Routes>
       <Toaster />
     
