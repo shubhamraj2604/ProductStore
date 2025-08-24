@@ -49,6 +49,7 @@ Navigate to `http://localhost:5173` (or the port shown in terminal)
 5. **Checkout**: Complete your purchase through the checkout process
 
 ## 📁 Project Structure
+```
 ProductStore/
 ├── public/
 │ ├── index.html
@@ -72,7 +73,7 @@ ProductStore/
 ├── package.json
 ├── vite.config.js
 └── README.md
-
+```
 
 ## 🌟 Demo
 
