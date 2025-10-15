@@ -6,6 +6,7 @@ import ProductPage from './pages/ProductPage.jsx'
 import { useThemeStore } from './store/useThemeStore.js'
 import CartPage from './pages/CartPage.jsx'
 import { Toaster } from 'react-hot-toast'
+import ProtectedRoute from './components/ProtectedRoute.jsx'
 const App = () => {
   const {theme} = useThemeStore();
   return (
@@ -14,7 +15,12 @@ const App = () => {
        <Routes>
       <Route path="/" element={<HomePage />}/>
       <Route path="/product/:id" element={<ProductPage />}/>
-      <Route path="/cart" element={<CartPage />} />
+      <Route path="/cart" element={
+        <ProtectedRoute >
+          <CartPage />
+          </ProtectedRoute>
+      }
+      />
       </Routes>
       <Toaster />
     

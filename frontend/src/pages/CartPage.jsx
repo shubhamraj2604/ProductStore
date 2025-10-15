@@ -47,7 +47,6 @@ const CartPage = () => {
         </div>
 
         {cart.length === 0 ? (
-          // Enhanced Empty State with Dark Theme
           <div className="flex flex-col items-center justify-center h-96 text-center space-y-6">
             <div className="relative">
               <div className="w-32 h-32 bg-gradient-to-br from-cyan-500 via-purple-500 to-pink-500 rounded-full flex items-center justify-center shadow-2xl">
@@ -182,7 +181,8 @@ const CartPage = () => {
                       </span>
                     </div>
                   </div>
-
+                  
+                  {/* PAYMENT INTEGRATION */}
                   <button className="w-full bg-gradient-to-r from-cyan-600 via-purple-600 to-pink-600 text-white py-4 rounded-xl font-bold text-lg hover:from-cyan-700 hover:via-purple-700 hover:to-pink-700 transition-all duration-300 transform hover:-translate-y-1 hover:shadow-2xl hover:shadow-purple-500/25">
                     Proceed to Checkout
                   </button>

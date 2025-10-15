@@ -5,37 +5,54 @@ import { PlusCircleIcon, RefreshCwIcon } from 'lucide-react';
 import ProductCard from '../components/ProductCard';
 import { PackageIcon } from 'lucide-react';
 import AddProductModal from '../components/AddProductModal';
+import ProtectedRoute from '../components/ProtectedRoute';
+import { useUser } from '@clerk/clerk-react';
 // import { testProducts } from '../constants/test';
 const HomePage = () => {
   const {products , loading , error , fetchProducts} = useProductStore();
-  
+  const {user} = useUser();
   useEffect(() =>{
     fetchProducts();
   },[fetchProducts])
-
+ console.log(user?.publicMetadata?.role == 'admin')
   console.log(products);
   return (
-   <div>
+    <div>
     <Hero />
+
    <hr className="border-t border-gray-300 " />
 
     <main id = "product-section" className="max-w-6xl mx-auto px-4 py-8 mt-10">
-      <div className='flex justify-between items-center mb-8'>
-        <button className='btn btn-primary' onClick={() => document.getElementById("add_product_modal").showModal()}>
-          <PlusCircleIcon  className='size-5 mr-2'/>
-          Add Product
-        </button>
-        <button className='btn btn-ghost btn-circle' onClick={fetchProducts}>
-          <RefreshCwIcon className='size-5'/> 
-        </button>
-      </div>
+     <ProtectedRoute>
+     <div className="flex justify-between items-center mb-8">
+  <div>
+    {user?.publicMetadata?.role?.trim() === 'admin' && (
+      <button
+        className="btn btn-primary flex items-center"
+        onClick={() => document.getElementById("add_product_modal").showModal()}
+      >
+        <PlusCircleIcon className="size-5 mr-2" />
+        Add Product
+      </button>
+    )}
+  </div>
+
+  <button
+    className="btn btn-ghost btn-circle"
+    onClick={fetchProducts}
+  >
+    <RefreshCwIcon className="size-5" />
+  </button>
+</div>
+
 
       <AddProductModal />
+         </ProtectedRoute>
        
        {error && <div className='alert alert-error mb-8'>{error}</div>}
          {/* When There is a zero product show this message */}
          {products.length === 0 && !loading && (
-        <div className="flex flex-col justify-center items-center h-96 space-y-4">
+           <div className="flex flex-col justify-center items-center h-96 space-y-4">
           <div className="bg-base-100 rounded-full p-6">
             <PackageIcon className="size-12" />
           </div>
@@ -50,11 +67,11 @@ const HomePage = () => {
 
        
        {loading ?(
-           <div className="flex justify-center items-center h-64">
+         <div className="flex justify-center items-center h-64">
             <div className="loading loading-spinner loading-lg"></div>
            </div>
        ):(
-        <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6'>
+         <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6'>
           {products.map((product) => (
             <ProductCard key={product.id} product={product} />
           ))}

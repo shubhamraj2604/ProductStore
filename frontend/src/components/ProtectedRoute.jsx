@@ -1,23 +1,27 @@
-import React from 'react';
-import { useAuth0 } from '@auth0/auth0-react';
-import { Navigate } from 'react-router-dom';
+import { SignedIn, SignedOut, useClerk } from "@clerk/clerk-react";
 
-const ProtectedRoute = ({ children }) => {
-  const { isAuthenticated, isLoading } = useAuth0();
+export default function ProtectedRoute({ children }) {
+  const { openSignIn } = useClerk();
 
-  if (isLoading) {
-    return (
-      <div className="flex justify-center items-center h-screen">
-        <div className="loading loading-spinner loading-lg"></div>
-      </div>
-    );
-  }
+  return (
+    <>
+      <SignedIn>
+        {children}
+      </SignedIn>
 
-  if (!isAuthenticated) {
-    return <Navigate to="/login" replace />;
-  }
-
-  return children;
-};
-
-export default ProtectedRoute; 
+      <SignedOut>
+        <div className="flex flex-col items-center justify-center border border-gray-300 rounded-lg p-6 bg-base-100">
+          <p className="text-lg font-semibold mb-4">
+            You must be logged in to access this section.
+          </p>
+          <button
+            className="btn btn-primary"
+            onClick={() => openSignIn({})}
+          >
+            Login
+          </button>
+        </div>
+      </SignedOut>
+    </>
+  );
+}
