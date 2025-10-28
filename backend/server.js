@@ -59,7 +59,9 @@ app.use(async (req,res,next) =>{
 
 app.use("/api/products",productRoutes);
 app.use("/api/users",userRoutes);
-
+app.get("/", (_req, res) => {
+  res.json({ service: "api", ok: true });
+});
 if (process.env.NODE_ENV === "production") {
   const distPath = path.join(__dirname, "..", "frontend", "dist");
   app.use(express.static(distPath));
