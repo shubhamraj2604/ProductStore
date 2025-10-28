@@ -14,7 +14,7 @@ const HomePage = () => {
   useEffect(() =>{
     fetchProducts();
   },[fetchProducts])
- console.log(user?.publicMetadata?.role == 'admin')
+//  console.log(user?.publicMetadata?.role == 'admin')
   console.log(products);
   return (
     <div>
