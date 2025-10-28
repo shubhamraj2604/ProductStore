@@ -1,6 +1,7 @@
 import axios from "axios";
 // import { toast } from "react-hot-toast";
 
+const BASE_URL = import.meta.env.MODE === "development" ? "http://localhost:3000" : "";
 export function useLogin() {
   const loginusers = async (username, email) => {
     if (!username || !email) {
@@ -8,7 +9,7 @@ export function useLogin() {
       return;
     }
     try {
-      const response = await axios.post("http://localhost:3000/api/users/login", {
+      const response = await axios.post(`${BASE_URL}/api/users/login`, {
         username,
         email,
       });

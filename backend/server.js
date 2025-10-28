@@ -7,18 +7,23 @@ import productRoutes from './routes/productRoutes.js';
 import {sql} from './config/db.js';
 import {aj} from './lib/arcjet.js';
 import userRoutes from './routes/userRoutes.js';
-dotenv.config();
+import path from 'path';
+import { fileURLToPath } from 'url';
 
+dotenv.config();
 
 const app = express();
 const PORT = process.env.PORT || 3000;
 
-console.log(PORT) ;
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 app.use(express.json());
 // cors is a small code you add to your backend to say:
 // “Hey browser, it's okay! I allow this request.”   
 app.use(cors());
-app.use(helmet());
+app.use(helmet({
+  contentSecurityPolicy:false,
+}));
 app.use(morgan("dev")); //"dev" is a format string that tells Morgan how to log requests in the console. "common"
 
 //apply arcjet 
@@ -48,12 +53,20 @@ app.use(async (req,res,next) =>{
     next();
    } catch (error) {
        console.error("arcjet error",error);
+       next();
    }
 });
 
-
 app.use("/api/products",productRoutes);
 app.use("/api/users",userRoutes);
+
+if (process.env.NODE_ENV === "production") {
+  const distPath = path.join(__dirname, "..", "frontend", "dist");
+  app.use(express.static(distPath));
+  app.get(/^\/(?!api).*/, (req, res) => {
+    res.sendFile(path.resolve(distPath, "index.html"));
+  });
+}
 
 async function initDb(params) {
     try{
@@ -80,11 +93,8 @@ async function initDb(params) {
     }
 }
 
-
-
-
 initDb().then(()=>{
-app.listen(PORT,()=>{
-    console.log("Server is running on port"+PORT);
-});
+  app.listen(PORT,()=>{
+    console.log("Server is running on port "+PORT);
+  });
 });
