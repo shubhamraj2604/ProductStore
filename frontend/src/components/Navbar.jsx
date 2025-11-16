@@ -15,35 +15,36 @@ const Navbar = () => {
   const { cart } = useCartStore();
 
   return (
-    <div className="bg-base-100/80 backdrop-blur-lg border-b border-base-content/10 sticky top-0 z-50">
+    <div className="bg-base-100/90 backdrop-blur-lg border-b border-base-content/10 sticky top-0 z-50 shadow-sm">
       <div className="max-w-7xl mx-auto">
-        <div className="navbar px-4 min-h-[4rem] justify-between">
+        <div className="navbar px-3 sm:px-4 lg:px-6 min-h-[3.5rem] sm:min-h-[4rem] justify-between">
           {/* LOGO */}
           <div className="flex-1 lg:flex-none">
             <Link to="/" className="hover:opacity-80 transition-opacity">
-              <div className="flex items-center gap-2">
-                <ShoppingCartIcon className="size-9 text-primary" />
+              <div className="flex items-center gap-1.5 sm:gap-2">
+                <ShoppingCartIcon className="size-7 sm:size-8 lg:size-9 text-primary" />
                 <span
-                  className="font-semibold font-mono tracking-widest text-2xl 
+                  className="font-semibold font-mono tracking-wide sm:tracking-widest text-lg sm:text-xl lg:text-2xl 
                   bg-clip-text text-transparent bg-gradient-to-r from-primary to-secondary"
                 >
-                  NEXTONICSTORE
+                  <span className="hidden sm:inline">NEXTONICSTORE</span>
+                  <span className="sm:hidden">NEXTONIC</span>
                 </span>
               </div>
             </Link>
           </div>
 
           {/* Right side */}
-          <div className="flex items-center gap-4">
+          <div className="flex items-center gap-2 sm:gap-3 lg:gap-4">
             <ThemeSelector />
 
             {/* Show Cart Icon only on home page */}
             {isHomePage && (
               <Link to="/cart" className="indicator">
-                <div className="p-2 rounded-full hover:bg-base-200 transition-colors relative">
-                  <ShoppingBagIcon className="size-5" />
+                <div className="p-1.5 sm:p-2 rounded-full hover:bg-base-200 transition-colors relative">
+                  <ShoppingBagIcon className="size-4 sm:size-5" />
                   {cart.length > 0 && (
-                    <span className="badge badge-sm badge-primary indicator-item">
+                    <span className="badge badge-xs sm:badge-sm badge-primary indicator-item">
                       {cart.length}
                     </span>
                   )}
@@ -52,12 +53,18 @@ const Navbar = () => {
             )}
 
             {/* Clerk Auth */}
-            <SignedOut>
-              <SignInButton mode="modal" />
-            </SignedOut>
-            <SignedIn>
-              <UserButton afterSignOutUrl="/" />
-            </SignedIn>
+            <div className="flex items-center">
+              <SignedOut>
+                <SignInButton mode="modal">
+                  <button className="btn btn-sm sm:btn-md btn-primary text-xs sm:text-sm">
+                    Sign In
+                  </button>
+                </SignInButton>
+              </SignedOut>
+              <SignedIn>
+                <UserButton afterSignOutUrl="/" />
+              </SignedIn>
+            </div>
           </div>
         </div>
       </div>

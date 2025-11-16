@@ -11,17 +11,60 @@ export const useProductStore = create((set, get) => ({
   loading: false,
   error: null,
   currentProduct: null,
+  searchQuery: "",
+  selectedCategory: "all",
 
     formData: {
     name: "",
     price: "",
     image: "",
+    category: "",
     },
 
     
 
   setFormData: (formData) => set({ formData }),
-  resetForm: () => set({ formData: { name: "", price: "", image: "" } }),
+  resetForm: () => set({ formData: { name: "", price: "", image: "", category: "" } }),
+  
+  // Search and filter functions
+  setSearchQuery: (query) => set({ searchQuery: query }),
+  setSelectedCategory: (category) => set({ selectedCategory: category }),
+  
+  // Get filtered products
+  getFilteredProducts: () => {
+    const { products, searchQuery, selectedCategory } = get();
+    let filtered = [...products];
+    
+    // Filter by category
+    if (selectedCategory !== "all") {
+      filtered = filtered.filter(product => 
+        product.category?.toLowerCase() === selectedCategory.toLowerCase()
+      );
+    }
+    
+    // Filter by search query
+    if (searchQuery.trim()) {
+      const query = searchQuery.toLowerCase();
+      filtered = filtered.filter(product =>
+        product.name?.toLowerCase().includes(query) ||
+        product.category?.toLowerCase().includes(query)
+      );
+    }
+    
+    return filtered;
+  },
+  
+  // Get unique categories from products
+  getCategories: () => {
+    const { products } = get();
+    const categories = new Set();
+    products.forEach(product => {
+      if (product.category) {
+        categories.add(product.category);
+      }
+    });
+    return Array.from(categories).sort();
+  },
 
   addProduct: async (e) => {
     e.preventDefault();

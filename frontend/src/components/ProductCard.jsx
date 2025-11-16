@@ -91,47 +91,47 @@ const ProductCard = ({ product }) => {
       </div>
 
       {/* Product Content */}
-      <div className="p-6">
+      <div className="p-4 sm:p-6">
         {/* Category & Rating */}
-        <div className="flex items-center justify-between mb-2">
-          <span className="text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+        <div className="flex items-center justify-between mb-2 gap-2">
+          <span className="text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider truncate">
             {product.category || 'Electronics'}
           </span>
           
-          <div className="flex items-center gap-1">
+          <div className="flex items-center gap-0.5 sm:gap-1 flex-shrink-0">
             {[...Array(5)].map((_, i) => (
               <Star
                 key={i}
-                className={`w-3 h-3 ${
+                className={`w-2.5 h-2.5 sm:w-3 sm:h-3 ${
                   i < (product.rating || 4) 
                     ? 'text-yellow-400 fill-current' 
                     : 'text-gray-300'
                 }`}
               />
             ))}
-            <span className="text-xs text-gray-500 ml-1">
+            <span className="text-xs text-gray-500 ml-0.5 sm:ml-1 hidden sm:inline">
               ({product.reviews || 23})
             </span>
           </div>
         </div>
 
         {/* Product Name */}
-        <h3 className="font-semibold text-gray-900 dark:text-white text-lg mb-2 line-clamp-2 group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors duration-200">
+        <h3 className="font-semibold text-gray-900 dark:text-white text-base sm:text-lg mb-2 line-clamp-2 group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors duration-200">
           {product.name}
         </h3>
 
         {/* Description */}
-        <p className="text-gray-600 dark:text-gray-300 text-sm mb-4 line-clamp-2">
+        <p className="text-gray-600 dark:text-gray-300 text-xs sm:text-sm mb-3 sm:mb-4 line-clamp-2 hidden sm:block">
           {product.description || 'Premium quality product with excellent features and design.'}
         </p>
 
         {/* Price */}
-        <div className="flex items-center gap-2 mb-4">
-          <span className="text-2xl font-bold text-gray-900 dark:text-white">
+        <div className="flex items-center gap-2 mb-3 sm:mb-4">
+          <span className="text-xl sm:text-2xl font-bold text-gray-900 dark:text-white">
             ${Number(product.price).toFixed(2)}
           </span>
           {product.originalPrice && (
-            <span className="text-lg text-gray-500 line-through">
+            <span className="text-base sm:text-lg text-gray-500 line-through">
               ${Number(product.originalPrice).toFixed(2)}
             </span>
           )}
@@ -159,27 +159,29 @@ const ProductCard = ({ product }) => {
           <div className="flex gap-2">
             <Link 
               to={`/product/${product.id}`} 
-              className="flex-1 btn btn-outline btn-info hover:scale-105 transition-transform duration-200"
+              className="flex-1 btn btn-sm sm:btn-md btn-outline btn-info hover:scale-105 transition-transform duration-200 active:scale-95"
             >
-              <EditIcon className="w-4 h-4 mr-2" />
-              Edit
+              <EditIcon className="w-3 h-3 sm:w-4 sm:h-4 sm:mr-2" />
+              <span className="hidden sm:inline">Edit</span>
             </Link>
             <button
-              className="btn btn-outline btn-error hover:scale-105 transition-transform duration-200"
+              className="btn btn-sm sm:btn-md btn-outline btn-error hover:scale-105 transition-transform duration-200 active:scale-95"
               onClick={() => deleteProduct(product.id)}
             >
-              <Trash2Icon className="w-4 h-4" />
+              <Trash2Icon className="w-3 h-3 sm:w-4 sm:h-4" />
             </button>
           </div>
         ) : (
           <div className="flex gap-2">
             <button 
-              className="flex-1 btn btn-primary hover:scale-105 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
+              className="flex-1 btn btn-sm sm:btn-md btn-primary hover:scale-105 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed active:scale-95"
               onClick={handleAddToCart}
               disabled={product.stock === 0}
             >
-              <ShoppingCart className="w-4 h-4 mr-2" />
-              {product.stock === 0 ? 'Out of Stock' : 'Add to Cart'}
+              <ShoppingCart className="w-3 h-3 sm:w-4 sm:h-4 sm:mr-2" />
+              <span className="text-xs sm:text-sm">
+                {product.stock === 0 ? 'Out of Stock' : 'Add to Cart'}
+              </span>
             </button>
           </div>
         )}
