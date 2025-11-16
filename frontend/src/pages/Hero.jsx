@@ -13,14 +13,14 @@ const Hero = () => {
   }}
 >
   <div className="hero-overlay"></div>
-  <div className="hero-content text-neutral-content text-center">
+  <div className="hero-content text-neutral-content text-center px-4">
     <div className="max-w-md">
-      <h1 className="mb-5 text-4xl text-purple-400 font-extrabold">Welcome to Our Store!</h1>
-      <p className="mb-5 text-gray-300">
+      <h1 className="mb-4 sm:mb-5 text-2xl sm:text-3xl lg:text-4xl text-purple-400 font-extrabold">Welcome to Our Store!</h1>
+      <p className="mb-4 sm:mb-5 text-sm sm:text-base text-gray-300 leading-relaxed">
      Discover a wide range of quality products tailored to your needs. From daily essentials to unique finds, we bring you trusted items with great value. Shop confidently, knowing every product is handpicked for satisfaction and style.
       </p>
       <button
-  className="btn btn-primary"
+  className="btn btn-sm sm:btn-md btn-primary"
   onClick={() => {
     document.getElementById("product-section")?.scrollIntoView({ behavior: "smooth" });
   }}
