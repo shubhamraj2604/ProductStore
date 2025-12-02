@@ -138,24 +138,39 @@ const ProductCard = ({ product }) => {
         </div>
 
         {/* Stock Status */}
-        <div className="mb-4">
-          <div className="flex items-center gap-2">
-            <div className={`w-2 h-2 rounded-full ${
-              product.stock > 10 ? 'bg-green-500' : 
-              product.stock > 0 ? 'bg-yellow-500' : 'bg-red-500'
-            }`}></div>
-            <span className={`text-sm font-medium ${
-              product.stock > 10 ? 'text-green-600' : 
-              product.stock > 0 ? 'text-yellow-600' : 'text-red-600'
-            }`}>
-              {product.stock > 10 ? 'In Stock' : 
-               product.stock > 0 ? `Only ${product.stock} left` : 'Out of Stock'}
-            </span>
+        {typeof product.stock !== 'undefined' && (
+          <div className="mb-4">
+            <div className="flex items-center gap-2">
+              <div
+                className={`w-2 h-2 rounded-full ${
+                  product.stock > 10
+                    ? 'bg-green-500'
+                    : product.stock > 0
+                    ? 'bg-yellow-500'
+                    : 'bg-red-500'
+                }`}
+              ></div>
+              <span
+                className={`text-sm font-medium ${
+                  product.stock > 10
+                    ? 'text-green-600'
+                    : product.stock > 0
+                    ? 'text-yellow-600'
+                    : 'text-red-600'
+                }`}
+              >
+                {product.stock > 10
+                  ? 'In Stock'
+                  : product.stock > 0
+                  ? `Only ${product.stock} left`
+                  : 'Out of Stock'}
+              </span>
+            </div>
           </div>
-        </div>
+        )}
 
         {/* Actions */}
-        {user?.publicMetadata?.role === "admin" ? (
+        {user?.publicMetadata?.role === "admin" && !product.isMock ? (
           <div className="flex gap-2">
             <Link 
               to={`/product/${product.id}`} 
