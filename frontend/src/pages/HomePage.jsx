@@ -9,7 +9,6 @@ import ProtectedRoute from '../components/ProtectedRoute';
 import { useUser } from '@clerk/clerk-react';
 import SearchBar from '../components/SearchBar';
 import CategoryFilter from '../components/CategoryFilter';
-import { testProducts } from '../constants/test';
 const HomePage = () => {
   const {products , loading , error , fetchProducts, getFilteredProducts, searchQuery, selectedCategory} = useProductStore();
   const {user} = useUser();
