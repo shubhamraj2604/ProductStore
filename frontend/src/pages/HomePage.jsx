@@ -89,29 +89,6 @@ const HomePage = () => {
          </ProtectedRoute>
        
        {error && <div className='alert alert-error mb-8'>{error}</div>}
-         {/* When there are zero products from backend show demo products instead */}
-         {!loading && products.length === 0 && (
-           <section className="mt-4 sm:mt-6">
-             <div className="flex items-center justify-between mb-4 sm:mb-6">
-               <div>
-                 <h3 className="text-lg sm:text-xl font-semibold flex items-center gap-2">
-                   <PackageIcon className="size-5 sm:size-6 text-primary" />
-                   Featured demo products
-                 </h3>
-                 <p className="text-gray-500 text-xs sm:text-sm">
-                   Your backend has no products yet, so we&apos;re showing a few
-                   beautiful sample items on the frontend.
-                 </p>
-               </div>
-             </div>
-
-             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
-               {testProducts.map((product) => (
-                 <ProductCard key={product.id} product={product} />
-               ))}
-             </div>
-           </section>
-         )}
 
        
        {loading ?(
