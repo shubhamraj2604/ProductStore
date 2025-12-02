@@ -4,7 +4,7 @@ import { Link, useResolvedPath } from 'react-router-dom';
 import ThemeSelector from './ThemeSelector';
 import { useThemeStore } from '../store/useThemeStore';
 import { useCartStore } from "../store/useAddtoCart";
-import { SignedIn, SignedOut, SignInButton, UserButton  , useUser} from '@clerk/clerk-react';
+import { SignedIn, SignedOut, UserButton  , useUser} from '@clerk/clerk-react';
 
 const Navbar = () => {
   const user = useUser();
@@ -55,11 +55,9 @@ const Navbar = () => {
             {/* Clerk Auth */}
             <div className="flex items-center">
               <SignedOut>
-                <SignInButton mode="modal">
-                  <button className="btn btn-sm sm:btn-md btn-primary text-xs sm:text-sm">
-                    Sign In
-                  </button>
-                </SignInButton>
+                <Link to="/login" className="btn btn-sm sm:btn-md btn-primary text-xs sm:text-sm">
+                  Sign In
+                </Link>
               </SignedOut>
               <SignedIn>
                 <UserButton afterSignOutUrl="/" />
