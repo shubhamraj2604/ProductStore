@@ -32,7 +32,7 @@ router.post("/create-checkout-session", async (req, res) => {
           unit_amount: Math.round(Number(item.price) * 100),
         },
       })),
-      console.log(origin);_
+      console.log(origin);
       success_url: `${origin}/success`,
       cancel_url: `${origin}/cancel`,
     });
