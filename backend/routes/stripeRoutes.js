@@ -17,7 +17,7 @@ router.post("/create-checkout-session", async (req, res) => {
     }
 
     const origin = req.headers.origin || process.env.FRONTEND_URL || "http://localhost:5173";
-
+       console.log(origin);
     const session = await stripe.checkout.sessions.create({
       mode: "payment",
       payment_method_types: ["card"],
@@ -32,7 +32,7 @@ router.post("/create-checkout-session", async (req, res) => {
           unit_amount: Math.round(Number(item.price) * 100),
         },
       })),
-      console.log(origin);
+   
       success_url: `${origin}/success`,
       cancel_url: `${origin}/cancel`,
     });
