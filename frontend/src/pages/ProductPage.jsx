@@ -2,7 +2,7 @@ import { useNavigate, useParams } from "react-router-dom";
 import { useProductStore } from "../store/useProduct";
 import { useEffect } from "react";
 import { ArrowLeftIcon, SaveIcon, Trash2Icon } from "lucide-react";
-import { useUser } from "@clerk/clerk-react";
+import ImageUpload from "../components/ImageUpload";
 
 function ProductPage() {
   const {
@@ -106,14 +106,12 @@ function ProductPage() {
 
               <div className="form-control">
                 <label className="label">
-                  <span className="label-text text-base font-medium">Image URL</span>
+                  <span className="label-text text-base font-medium">Product Image</span>
                 </label>
-                <input
-                  type="text"
-                  placeholder="https://example.com/image.jpg"
-                  className="input input-bordered w-full"
+                <ImageUpload
                   value={formData.image}
-                  onChange={(e) => setFormData({ ...formData, image: e.target.value })}
+                  onChange={(image) => setFormData({ ...formData, image })}
+                  disabled={loading}
                 />
               </div>
 

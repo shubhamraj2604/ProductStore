@@ -200,6 +200,17 @@ The application uses **Clerk** for authentication with the following features:
 - **Total Calculation** - Automatic price calculations
 - **Cart Badge** - Visual cart item count
 
+## 🚀 Deployment
+
+### Frontend (Vercel/Netlify)
+1. Build the frontend: `npm run build --prefix frontend`
+2. Deploy the `frontend/dist` folder
+3. Set environment variables for production
+
+### Backend (Railway/Heroku)
+1. Deploy the backend folder
+2. Set environment variables
+3. Ensure database connection is configured
 
 ## 🤝 Contributing
 

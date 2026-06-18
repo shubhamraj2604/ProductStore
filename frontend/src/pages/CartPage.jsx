@@ -2,11 +2,46 @@ import React from "react";
 import { useCartStore } from "../store/useAddtoCart";
 import { ArrowLeftIcon, ShoppingCartIcon, PlusIcon, MinusIcon, TrashIcon, HeartIcon, SparklesIcon } from "lucide-react";
 import { useNavigate } from "react-router-dom";
+import toast from "react-hot-toast";
+import axios from "axios";
 
 const CartPage = () => {
   const { cart, removeFromCart, increaseQuantity, decreaseQuantity, getCartTotal } = useCartStore();
   const navigate = useNavigate();
   const total = getCartTotal();
+  const [isRedirecting, setIsRedirecting] = React.useState(false);
+
+const handleCheckout = async () => {
+  if (cart.length === 0) {
+    toast.error("Your cart is empty");
+    return;
+  }
+
+  try {
+    setIsRedirecting(true);
+
+    const { data } = await axios.post(
+      "/api/stripe/create-checkout-session",
+      {
+        items: cart,
+      }
+    );
+
+    if (data.url) {
+      window.location.href = data.url;
+      return;
+    }
+
+    throw new Error("Stripe did not return a checkout URL");
+  } catch (error) {
+    toast.error(
+      error.response?.data?.message ||
+      error.message ||
+      "Checkout failed"
+    );
+    setIsRedirecting(false);
+  }
+};
 
   return (
     <div className="min-h-screen relative overflow-hidden bg-gradient-to-br from-gray-900 via-gray-800 to-black">
@@ -188,8 +223,12 @@ const CartPage = () => {
                   </div>
                   
                   {/* PAYMENT INTEGRATION */}
-                  <button className="w-full bg-gradient-to-r from-cyan-600 via-purple-600 to-pink-600 text-white py-3 sm:py-4 rounded-xl font-bold text-base sm:text-lg hover:from-cyan-700 hover:via-purple-700 hover:to-pink-700 transition-all duration-300 transform hover:-translate-y-1 hover:shadow-2xl hover:shadow-purple-500/25 active:scale-95">
-                    Proceed to Checkout
+                  <button
+                    onClick={handleCheckout}
+                    disabled={isRedirecting}
+                    className="w-full bg-gradient-to-r from-cyan-600 via-purple-600 to-pink-600 text-white py-4 rounded-xl font-bold text-lg hover:from-cyan-700 hover:via-purple-700 hover:to-pink-700 transition-all duration-300 transform hover:-translate-y-1 hover:shadow-2xl hover:shadow-purple-500/25 disabled:opacity-60 disabled:cursor-not-allowed"
+                  >
+                    {isRedirecting ? "Redirecting to Stripe..." : "Proceed to Checkout"}
                   </button>
 
                   <div className="mt-4 text-center">

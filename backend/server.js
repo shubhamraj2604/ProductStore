@@ -4,6 +4,7 @@ import morgan from 'morgan';
 import cors from 'cors';
 import dotenv from 'dotenv';
 import productRoutes from './routes/productRoutes.js';
+import stripeRoutes from './routes/stripeRoutes.js';
 import {sql} from './config/db.js';
 import {aj} from './lib/arcjet.js';
 import userRoutes from './routes/userRoutes.js';
@@ -59,6 +60,7 @@ app.use(async (req,res,next) =>{
 
 app.use("/api/products",productRoutes);
 app.use("/api/users",userRoutes);
+app.use("/api/stripe", stripeRoutes);
 app.get("/", (_req, res) => {
   res.json({ service: "api", ok: true });
 });
@@ -76,10 +78,14 @@ async function initDb(params) {
       CREATE TABLE IF NOT EXISTS products (
       id SERIAL PRIMARY KEY,
       name VARCHAR(255) NOT NULL,
-      image VARCHAR(255) NOT NULL,
+      image TEXT NOT NULL,
       price DECIMAL(10,2) NOT NULL,
       created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
     )
+    `;
+
+    await sql`
+    ALTER TABLE products ALTER COLUMN image TYPE TEXT
     `;
 
     await sql`

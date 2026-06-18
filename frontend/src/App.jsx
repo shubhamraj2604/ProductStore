@@ -3,20 +3,12 @@ import Navbar from './components/Navbar.jsx'
 import { Routes , Route } from 'react-router-dom'
 import HomePage from './pages/HomePage.jsx'
 import ProductPage from './pages/ProductPage.jsx'
-import LoginPage from './pages/LoginPage.jsx'
-import { useThemeStore } from './store/useThemeStore.js'
 import CartPage from './pages/CartPage.jsx'
+import CheckoutSuccess from './pages/CheckoutSuccess.jsx'
+import CheckoutCancel from './pages/CheckoutCancel.jsx'
 import { Toaster } from 'react-hot-toast'
 import ProtectedRoute from './components/ProtectedRoute.jsx'
 const App = () => {
-  const {theme} = useThemeStore();
-
-  useEffect(() => {
-    if (theme) {
-      document.documentElement.setAttribute('data-theme', theme);
-      document.body.setAttribute('data-theme', theme);
-    }
-  }, [theme]);
   return (
     <div className='min-h-screen bg-base-200 transition-colors duration-300'>
       <Navbar />
@@ -30,6 +22,8 @@ const App = () => {
           </ProtectedRoute>
       }
       />
+      <Route path="/success" element={<CheckoutSuccess />} />
+      <Route path="/cancel" element={<CheckoutCancel />} />
       </Routes>
       <Toaster />
     
