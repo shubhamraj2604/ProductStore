@@ -1,7 +1,8 @@
-import { SignedIn, SignedOut, useClerk } from "@clerk/clerk-react";
+import { SignedIn, SignedOut } from "@clerk/clerk-react";
+import { useNavigate } from "react-router-dom";
 
 export default function ProtectedRoute({ children }) {
-  const { openSignIn } = useClerk();
+  const navigate = useNavigate();
 
   return (
     <>
@@ -16,9 +17,9 @@ export default function ProtectedRoute({ children }) {
           </p>
           <button
             className="btn btn-primary"
-            onClick={() => openSignIn({})}
+            onClick={() => navigate("/login")}
           >
-            Login
+            Go to Login
           </button>
         </div>
       </SignedOut>

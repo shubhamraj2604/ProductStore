@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import Navbar from './components/Navbar.jsx'
 import { Routes , Route } from 'react-router-dom'
 import HomePage from './pages/HomePage.jsx'
@@ -10,11 +10,12 @@ import { Toaster } from 'react-hot-toast'
 import ProtectedRoute from './components/ProtectedRoute.jsx'
 const App = () => {
   return (
-    <div className='min-h-screen bg-base-200 transition-colors duration-300 bg-gradient-to-b from-black to-gray-900' >
+    <div className='min-h-screen bg-base-200 transition-colors duration-300'>
       <Navbar />
        <Routes>
       <Route path="/" element={<HomePage />}/>
       <Route path="/product/:id" element={<ProductPage />}/>
+      <Route path="/login" element={<LoginPage />}/>
       <Route path="/cart" element={
         <ProtectedRoute >
           <CartPage />

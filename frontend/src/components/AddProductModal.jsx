@@ -70,6 +70,35 @@ function AddProductModal() {
                 disabled={loading}
               />
             </div>
+
+            {/* PRODUCT CATEGORY */}
+            <div className="form-control">
+              <label className="label">
+                <span className="label-text text-base font-medium">Category</span>
+              </label>
+              <div className="relative">
+                <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-base-content/50">
+                  <TagIcon className="size-5" />
+                </div>
+                <select
+                  className="select select-bordered w-full pl-10 py-3 focus:select-primary transition-colors duration-200"
+                  value={formData.category}
+                  onChange={(e) => setFormData({ ...formData, category: e.target.value })}
+                >
+                  <option value="">Select a category</option>
+                  <option value="Phone">Phone</option>
+                  <option value="Laptop">Laptop</option>
+                  <option value="Tablet">Tablet</option>
+                  <option value="Accessories">Accessories</option>
+                  <option value="Electronics">Electronics</option>
+                  <option value="Clothing">Clothing</option>
+                  <option value="Shoes">Shoes</option>
+                  <option value="Books">Books</option>
+                  <option value="Home">Home</option>
+                  <option value="Sports">Sports</option>
+                </select>
+              </div>
+            </div>
           </div>
 
           {/* MODAL ACTIONS */}
@@ -80,7 +109,7 @@ function AddProductModal() {
             <button
               type="submit"
               className="btn btn-primary min-w-[120px]"
-              disabled={!formData.name || !formData.price || !formData.image || loading}
+              disabled={!formData.name || !formData.price || !formData.image || !formData.category || loading}
             >
               {loading ? (
                 <span className="loading loading-spinner loading-sm" />
