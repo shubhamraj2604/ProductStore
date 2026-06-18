@@ -66,8 +66,15 @@ app.get("/", (_req, res) => {
 });
 if (process.env.NODE_ENV === "production") {
   const distPath = path.join(__dirname, "..", "frontend", "dist");
+
+  console.log("NODE_ENV =", process.env.NODE_ENV);
+  console.log("__dirname =", __dirname);
+  console.log("distPath =", distPath);
+
   app.use(express.static(distPath));
+
   app.get(/^\/(?!api).*/, (req, res) => {
+    console.log("SPA Route Hit:", req.path);
     res.sendFile(path.resolve(distPath, "index.html"));
   });
 }
