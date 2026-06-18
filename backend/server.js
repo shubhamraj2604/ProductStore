@@ -64,7 +64,6 @@ app.use("/api/stripe", stripeRoutes);
 app.get("/", (_req, res) => {
   res.json({ service: "api", ok: true });
 });
-import fs from "fs";
 
 if (process.env.NODE_ENV === "production") {
   const distPath = path.join(__dirname, "..", "frontend", "dist");
