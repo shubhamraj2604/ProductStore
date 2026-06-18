@@ -1,4 +1,4 @@
-import { DollarSignIcon, Package2Icon, PlusCircleIcon } from "lucide-react";
+import { DollarSignIcon, Package2Icon, PlusCircleIcon  , TagIcon} from "lucide-react";
 import { useProductStore } from "../store/useProduct";
 import ImageUpload from "./ImageUpload";
 
