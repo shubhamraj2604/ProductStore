@@ -4,7 +4,7 @@ import { ArrowLeftIcon, ShoppingCartIcon, PlusIcon, MinusIcon, TrashIcon, HeartI
 import { useNavigate } from "react-router-dom";
 import toast from "react-hot-toast";
 import axios from "axios";
-
+const BASE_URL = import.meta.env.VITE_BACKEND_URL;
 const CartPage = () => {
   const { cart, removeFromCart, increaseQuantity, decreaseQuantity, getCartTotal } = useCartStore();
   const navigate = useNavigate();
@@ -21,7 +21,7 @@ const handleCheckout = async () => {
     setIsRedirecting(true);
 
     const { data } = await axios.post(
-      "/api/stripe/create-checkout-session",
+      `${BASE_URL}/api/stripe/create-checkout-session`,
       {
         items: cart,
       }
