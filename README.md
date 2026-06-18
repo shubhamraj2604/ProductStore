@@ -188,7 +188,7 @@ Features:
 * Admin users can manage products
 * Regular users can browse and purchase products
 
-### 🛒 Shopping & Payments
+## 🛒 Shopping & Payments
 
 * **Shopping Cart** - Add, remove, and manage cart items
 * **Persistent Cart Storage** - Cart data persists across sessions
@@ -212,8 +212,6 @@ Features:
 - **Real-time Updates** - Instant cart updates
 - **Total Calculation** - Automatic price calculations
 - **Cart Badge** - Visual cart item count
-
-## 🚀 Deployment
 
 ## 🚀 Deployment
 
