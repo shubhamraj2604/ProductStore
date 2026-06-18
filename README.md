@@ -28,28 +28,29 @@ A modern, full-stack e-commerce application built with React, Node.js, and Postg
 - **Error Handling** - Comprehensive error management
 - **CORS Support** - Cross-origin resource sharing enabled
 
-## 🚀 Tech Stack
-
 ### Frontend
-- **React 19.1.0** - Modern UI library
-- **Vite** - Fast build tool and dev server
-- **TailwindCSS** - Utility-first CSS framework
-- **DaisyUI** - Component library for TailwindCSS
-- **React Router DOM** - Client-side routing
-- **Zustand** - State management
-- **Clerk** - Authentication service
-- **Lucide React** - Beautiful icons
-- **React Hot Toast** - Toast notifications
+
+* **React 19.1.0** - Modern UI library
+* **Vite** - Fast build tool and dev server
+* **TailwindCSS** - Utility-first CSS framework
+* **DaisyUI** - Component library for TailwindCSS
+* **React Router DOM** - Client-side routing
+* **Zustand** - State management
+* **Clerk** - Authentication and user management
+* **Lucide React** - Beautiful icons
+* **React Hot Toast** - Toast notifications
 
 ### Backend
-- **Node.js** - JavaScript runtime
-- **Express.js** - Web framework
-- **PostgreSQL** - Database (hosted on Neon)
-- **Neon Serverless** - Database connection
-- **Helmet.js** - Security middleware
-- **Arcjet** - Rate limiting and security
-- **CORS** - Cross-origin resource sharing
-- **Morgan** - HTTP request logger
+
+* **Node.js** - JavaScript runtime
+* **Express.js** - Web framework
+* **PostgreSQL** - Database (hosted on Neon)
+* **Neon Serverless** - Database connection
+* **Stripe** - Secure payment processing
+* **Helmet.js** - Security middleware
+* **Arcjet** - Rate limiting and security
+* **CORS** - Cross-origin resource sharing
+* **Morgan** - HTTP request logger
 
 ## 📁 Project Structure
 
@@ -175,13 +176,25 @@ npm start
 - Integrated with Clerk for user authentication
 - Role-based access control (Admin/User)
 
+
 ## 🔐 Authentication & Authorization
 
-The application uses **Clerk** for authentication with the following features:
-- Secure user registration and login
-- Role-based access control
-- Admin users can manage products
-- Regular users can browse and purchase
+The application uses **Clerk** for authentication and user management.
+Features:
+* Secure user registration and login
+* Protected routes
+* Session management
+* Role-based access control
+* Admin users can manage products
+* Regular users can browse and purchase products
+
+### 🛒 Shopping & Payments
+
+* **Shopping Cart** - Add, remove, and manage cart items
+* **Persistent Cart Storage** - Cart data persists across sessions
+* **Stripe Checkout Integration** - Secure online payments
+* **Success & Cancel Payment Flow**
+* **Real-time Total Calculation**
 
 ## 🎨 UI/UX Features
 
@@ -202,15 +215,25 @@ The application uses **Clerk** for authentication with the following features:
 
 ## 🚀 Deployment
 
-### Frontend (Vercel/Netlify)
-1. Build the frontend: `npm run build --prefix frontend`
-2. Deploy the `frontend/dist` folder
-3. Set environment variables for production
+## 🚀 Deployment
 
-### Backend (Railway/Heroku)
-1. Deploy the backend folder
-2. Set environment variables
-3. Ensure database connection is configured
+### Frontend (Vercel)
+
+* Deployed on Vercel
+* React Router SPA rewrites configured
+* Clerk authentication enabled
+
+### Backend (Render)
+
+* Express.js API hosted on Render
+* PostgreSQL database hosted on Neon
+* Stripe Checkout integration configured
+
+### Live Links
+
+* **Frontend:** https://your-vercel-app.vercel.app
+* **Backend API:** https://productstore-1hrq.onrender.com
+
 
 ## 🤝 Contributing
 
