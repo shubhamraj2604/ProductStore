@@ -18,15 +18,15 @@ export const getProducts = async (req, res) => {
 };
 
 export const createProducts = async (req, res) =>  {
-    const {name, price,image} = req.body
+    const {name, price,image , category} = req.body
     if(!name || !price || !image){
         return res.status(400).json({success: false, message: "Please fill in all fields"});
     }
 
     try{ 
         const newProduct = await sql`
-        INSERT INTO products (name, price, image)
-        VALUES (${name}, ${price}, ${image})
+        INSERT INTO products (name, price, image , category)
+        VALUES (${name}, ${price}, ${image} , ${category})
         RETURNING *                                
         `;  // TO RETURN THE INSERTED VALUES
 

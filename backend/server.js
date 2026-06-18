@@ -10,6 +10,7 @@ import {aj} from './lib/arcjet.js';
 import userRoutes from './routes/userRoutes.js';
 import path from 'path';
 import { fileURLToPath } from 'url';
+import uploadRoutes from "./routes/uploadRoutes.js";
 import fs from "fs";
 dotenv.config();
 
@@ -61,6 +62,8 @@ app.use(async (req,res,next) =>{
 app.use("/api/products",productRoutes);
 app.use("/api/users",userRoutes);
 app.use("/api/stripe", stripeRoutes);
+
+app.use("/api/upload", uploadRoutes);
 app.get("/", (_req, res) => {
   res.json({ service: "api", ok: true });
 });
@@ -98,7 +101,8 @@ async function initDb(params) {
     `;
 
     await sql`
-    ALTER TABLE products ALTER COLUMN image TYPE TEXT
+    ALTER TABLE products
+ADD COLUMN category VARCHAR(100) NOT NULL DEFAULT 'General';
     `;
 
     await sql`

@@ -1,7 +1,8 @@
 import { useRef, useState } from "react";
 import { ImageIcon, UploadIcon, XIcon } from "lucide-react";
 import toast from "react-hot-toast";
-import { uploadImageToCloudinary } from "../lib/cloudinary";
+import axios from "axios";
+const BASE_URL = import.meta.env.VITE_BACKEND_URL;
 
 function ImageUpload({ value, onChange, disabled = false }) {
   const fileInputRef = useRef(null);
@@ -23,9 +24,15 @@ function ImageUpload({ value, onChange, disabled = false }) {
 
     setUploading(true);
     try {
-      const url = await uploadImageToCloudinary(file);
-      onChange(url);
-      toast.success("Image uploaded");
+     const formData = new FormData();
+    formData.append("image", file);
+
+     const response = await axios.post(
+    `${BASE_URL}/api/upload`,
+     formData
+     );
+
+      onChange(response.data.imageUrl);
     } catch (error) {
       console.error("Cloudinary upload error:", error);
       toast.error(error.message || "Failed to upload image");
