@@ -1,5 +1,6 @@
-import { DollarSignIcon, ImageIcon, Package2Icon, PlusCircleIcon } from "lucide-react";
+import { DollarSignIcon, Package2Icon, PlusCircleIcon } from "lucide-react";
 import { useProductStore } from "../store/useProduct";
+import ImageUpload from "./ImageUpload";
 
 function AddProductModal() {
   const { addProduct, formData, setFormData, loading } = useProductStore();
@@ -61,20 +62,13 @@ function AddProductModal() {
             {/* PRODUCT IMAGE */}
             <div className="form-control">
               <label className="label">
-                <span className="label-text text-base font-medium">Image URL</span>
+                <span className="label-text text-base font-medium">Product Image</span>
               </label>
-              <div className="relative">
-                <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-base-content/50">
-                  <ImageIcon className="size-5" />
-                </div>
-                <input
-                  type="text"
-                  placeholder="https://example.com/image.jpg"
-                  className="input input-bordered w-full pl-10 py-3 focus:input-primary transition-colors duration-200"
-                  value={formData.image}
-                  onChange={(e) => setFormData({ ...formData, image: e.target.value })}
-                />
-              </div>
+              <ImageUpload
+                value={formData.image}
+                onChange={(image) => setFormData({ ...formData, image })}
+                disabled={loading}
+              />
             </div>
           </div>
 
