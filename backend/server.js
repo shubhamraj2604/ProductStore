@@ -10,7 +10,7 @@ import {aj} from './lib/arcjet.js';
 import userRoutes from './routes/userRoutes.js';
 import path from 'path';
 import { fileURLToPath } from 'url';
-
+import fs from "fs";
 dotenv.config();
 
 const app = express();
@@ -64,12 +64,19 @@ app.use("/api/stripe", stripeRoutes);
 app.get("/", (_req, res) => {
   res.json({ service: "api", ok: true });
 });
+import fs from "fs";
+
 if (process.env.NODE_ENV === "production") {
   const distPath = path.join(__dirname, "..", "frontend", "dist");
 
   console.log("NODE_ENV =", process.env.NODE_ENV);
   console.log("__dirname =", __dirname);
   console.log("distPath =", distPath);
+
+  console.log(
+    "index exists:",
+    fs.existsSync(path.join(distPath, "index.html"))
+  );
 
   app.use(express.static(distPath));
 
