@@ -46,7 +46,9 @@ export const useProductStore = create((set, get) => ({
     if (searchQuery.trim()) {
       const query = searchQuery.toLowerCase();
       filtered = filtered.filter(product =>
-        product.name?.toLowerCase().includes(query) ||
+        //("laptop".includes(lap) || "electronics".includes(elec))
+        product.name?.toLowerCase().includes(query)
+        ||
         product.category?.toLowerCase().includes(query)
       );
     }
