@@ -3,7 +3,8 @@ import axios from "axios";
 import { useUser } from "@clerk/clerk-react";
 import { useCartStore } from "../store/useAddtoCart";
 
-const CART_API = "/api/cart";
+const BASE_URL = import.meta.env.VITE_BACKEND_URL || (import.meta.env.DEV ? "http://localhost:3000" : "");
+const CART_API = `${BASE_URL}/api/cart`;
 
 function CartSync() {
   const { isLoaded, isSignedIn, user } = useUser();
