@@ -9,10 +9,12 @@ import CheckoutCancel from './pages/CheckoutCancel.jsx'
 import LoginPage from './pages/LoginPage.jsx'
 import { Toaster } from 'react-hot-toast'
 import ProtectedRoute from './components/ProtectedRoute.jsx'
+import CartSync from './components/CartSync.jsx'
 const App = () => {
   return (
     <div className='min-h-screen bg-base-200 transition-colors duration-300'>
       <Navbar />
+      <CartSync />
        <Routes>
       <Route path="/" element={<HomePage />}/>
       <Route path="/product/:id" element={<ProductPage />}/>

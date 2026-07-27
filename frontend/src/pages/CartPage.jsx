@@ -2,11 +2,15 @@ import React from "react";
 import { useCartStore } from "../store/useAddtoCart";
 import { ArrowLeftIcon, ShoppingCartIcon, PlusIcon, MinusIcon, TrashIcon, HeartIcon, SparklesIcon } from "lucide-react";
 import { useNavigate } from "react-router-dom";
+import { useUser } from "@clerk/clerk-react";
 import toast from "react-hot-toast";
 import axios from "axios";
-const BASE_URL = import.meta.env.VITE_BACKEND_URL;
+
+const BASE_URL = import.meta.env.VITE_BACKEND_URL || (import.meta.env.DEV ? "http://localhost:3000" : "");
+
 const CartPage = () => {
   const { cart, removeFromCart, increaseQuantity, decreaseQuantity, getCartTotal } = useCartStore();
+  const { isLoaded, isSignedIn, user } = useUser();
   const navigate = useNavigate();
   const total = getCartTotal();
   const [isRedirecting, setIsRedirecting] = React.useState(false);
@@ -19,6 +23,14 @@ const handleCheckout = async () => {
 
   try {
     setIsRedirecting(true);
+
+    if (isLoaded && isSignedIn && user) {
+      await axios.put(`${BASE_URL}/api/cart`, {
+        clerkUserId: user.id,
+        email: user.primaryEmailAddress?.emailAddress ?? null,
+        items: cart,
+      });
+    }
 
     const { data } = await axios.post(
       `${BASE_URL}/api/stripe/create-checkout-session`,

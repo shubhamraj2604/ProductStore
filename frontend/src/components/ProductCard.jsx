@@ -9,19 +9,24 @@ import {
   Eye,
   Share2
 } from 'lucide-react'; 
-import { useThemeStore } from '../store/useThemeStore';
 import { useProductStore } from '../store/useProduct';
 import { useCartStore } from '../store/useAddtoCart';
-import { useUser } from '@clerk/clerk-react';
+import { useClerk, useUser } from '@clerk/clerk-react';
 
 const ProductCard = ({ product }) => {
   const { user } = useUser();
+  const { openSignIn } = useClerk();
   const { deleteProduct } = useProductStore();
   const { addToCart } = useCartStore();
   const [isWishlisted, setIsWishlisted] = useState(false);
   const [isHovered, setIsHovered] = useState(false);
 
   const handleAddToCart = () => {
+    if (!user) {
+      openSignIn({});
+      return;
+    }
+
     addToCart(product);
     // You could add a toast notification here
   };
