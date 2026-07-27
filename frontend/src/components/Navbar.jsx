@@ -2,16 +2,13 @@ import { ShoppingCartIcon, ShoppingBagIcon } from 'lucide-react';
 import React from 'react';
 import { Link, useResolvedPath } from 'react-router-dom';
 import ThemeSelector from './ThemeSelector';
-import { useThemeStore } from '../store/useThemeStore';
 import { useCartStore } from "../store/useAddtoCart";
-import { SignedIn, SignedOut, UserButton  , useUser} from '@clerk/clerk-react';
+import { SignedIn, SignedOut, SignInButton, UserButton} from '@clerk/clerk-react';
 
 const Navbar = () => {
-  const user = useUser();
   const { pathname } = useResolvedPath();
   const isHomePage = pathname === "/";
 
-  const { theme, setTheme } = useThemeStore();
   const { cart } = useCartStore();
 
   return (
@@ -41,10 +38,10 @@ const Navbar = () => {
             {/* Show Cart Icon only on home page */}
             {isHomePage && (
               <Link to="/cart" className="indicator">
-                <div className="p-1.5 sm:p-2 rounded-full hover:bg-base-200 transition-colors relative">
-                  <ShoppingBagIcon className="size-4 sm:size-5" />
+                <div className="p-2 rounded-full hover:bg-base-200 transition-colors relative">
+                  <ShoppingBagIcon className="size-5" />
                   {cart.length > 0 && (
-                    <span className="badge badge-xs sm:badge-sm badge-primary indicator-item">
+                    <span className="badge badge-sm badge-primary indicator-item">
                       {cart.length}
                     </span>
                   )}

@@ -2,7 +2,7 @@ import { create } from 'zustand';
 import axios from "axios";
 import toast from 'react-hot-toast';
 
-const BASE_URL = import.meta.env.VITE_BACKEND_URL;
+const BASE_URL = import.meta.env.VITE_BACKEND_URL || (import.meta.env.DEV ? 'http://localhost:3000' : '');
 
 
 
@@ -97,7 +97,7 @@ export const useProductStore = create((set, get) => ({
       if (status === 429) {
         set({ error: "Rate limit exceeded", products: [] });
       } else {
-        
+        set({ error: err.response?.data?.message || err.message || "Failed to fetch products", products: [] });
       }
     } finally {
       set({ loading: false });

@@ -8,6 +8,7 @@ import stripeRoutes from './routes/stripeRoutes.js';
 import {sql} from './config/db.js';
 import {aj} from './lib/arcjet.js';
 import userRoutes from './routes/userRoutes.js';
+import cartRoutes from './routes/cartRoutes.js';
 import path from 'path';
 import { fileURLToPath } from 'url';
 import uploadRoutes from "./routes/uploadRoutes.js";
@@ -61,6 +62,7 @@ app.use(async (req,res,next) =>{
 
 app.use("/api/products",productRoutes);
 app.use("/api/users",userRoutes);
+app.use("/api/cart", cartRoutes);
 app.use("/api/stripe", stripeRoutes);
 
 app.use("/api/upload", uploadRoutes);
@@ -102,7 +104,7 @@ async function initDb(params) {
 
     await sql`
     ALTER TABLE products
-ADD COLUMN category VARCHAR(100) NOT NULL DEFAULT 'General';
+    ADD COLUMN IF NOT EXISTS category VARCHAR(100) NOT NULL DEFAULT 'General';
     `;
 
     await sql`
@@ -112,6 +114,19 @@ ADD COLUMN category VARCHAR(100) NOT NULL DEFAULT 'General';
       email VARCHAR(255) NOT NULL UNIQUE,
       created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
     )`
+
+    await sql`
+    CREATE TABLE IF NOT EXISTS carts (
+      id SERIAL PRIMARY KEY,
+      clerk_user_id VARCHAR(255) NOT NULL UNIQUE,
+      email VARCHAR(255),
+      items JSONB NOT NULL DEFAULT '[]'::jsonb,
+      updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    )`
+
+    await sql`
+    CREATE INDEX IF NOT EXISTS idx_carts_clerk_user_id ON carts (clerk_user_id)
+    `
     console.log("DATABASE INITIALIZED SUCCESSfullly")
     }catch(error){
         console.log("error",error);

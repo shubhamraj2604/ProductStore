@@ -2,14 +2,29 @@ import { useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { CheckCircle2 } from "lucide-react";
 import { useCartStore } from "../store/useAddtoCart";
+import { useUser } from "@clerk/clerk-react";
+import axios from "axios";
 
 function CheckoutSuccess() {
   const clearCart = useCartStore((state) => state.clearCart);
+  const { user, isLoaded, isSignedIn } = useUser();
   const navigate = useNavigate();
 
   useEffect(() => {
-    clearCart();
-  }, [clearCart]);
+    const clearSavedCart = async () => {
+      if (isLoaded && isSignedIn && user) {
+        try {
+          await axios.delete(`/api/cart/${user.id}`);
+        } catch (error) {
+          console.error("Error clearing saved cart", error);
+        }
+      }
+
+      clearCart();
+    };
+
+    clearSavedCart();
+  }, [clearCart, isLoaded, isSignedIn, user]);
 
   return (
     <div className="min-h-screen flex items-center justify-center px-4">
