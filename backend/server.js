@@ -20,6 +20,22 @@ const PORT = process.env.PORT || 3000;
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
+
+// Capture raw body for Stripe webhook route before JSON body parser
+app.use((req, res, next) => {
+  if (req.originalUrl === "/api/stripe/webhook") {
+    const chunks = [];
+    req.on("data", (chunk) => chunks.push(chunk));
+    req.on("end", () => {
+      req.rawBody = Buffer.concat(chunks);
+      next();
+    });
+    req.on("error", (err) => next(err));
+  } else {
+    next();
+  }
+});
+
 app.use(express.json());
 // cors is a small code you add to your backend to say:
 // “Hey browser, it's okay! I allow this request.”   
@@ -127,6 +143,19 @@ async function initDb(params) {
     await sql`
     CREATE INDEX IF NOT EXISTS idx_carts_clerk_user_id ON carts (clerk_user_id)
     `
+    await sql`
+    CREATE TABLE IF NOT EXISTS orders (
+      id SERIAL PRIMARY KEY,
+      stripe_session_id VARCHAR(255) NOT NULL UNIQUE,
+      payment_intent_id VARCHAR(255),
+      payment_status VARCHAR(50) NOT NULL,
+      amount_total INTEGER NOT NULL DEFAULT 0,
+      currency VARCHAR(10) NOT NULL DEFAULT 'usd',
+      customer_email VARCHAR(255),
+      items JSONB NOT NULL DEFAULT '[]'::jsonb,
+      created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+      updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    )`
     console.log("DATABASE INITIALIZED SUCCESSfullly")
     }catch(error){
         console.log("error",error);
