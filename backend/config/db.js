@@ -7,5 +7,5 @@ const {PGHOST , PGUSER, PGPASSWORD, PGDATABASE, PGPORT} = process.env;
 
 // CREATES A SQL CONNECTIONS USING OUR ENV VARIABLES
 export const sql = neon(
-    `postgresql://${PGUSER}:${PGPASSWORD}@${PGHOST}/${PGDATABASE}`
+    `postgresql://${PGUSER}:${PGPASSWORD}@${PGHOST}/${PGDATABASE}?sslmode=require`
 )
