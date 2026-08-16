@@ -1,23 +1,22 @@
 import axios from "axios";
-// import { toast } from "react-hot-toast";
-const BASE_URL = import.meta.env.VITE_BACKEND_URL;
+import toast from "react-hot-toast";
+
+const BASE_URL = import.meta.env.VITE_BACKEND_URL || (import.meta.env.DEV ? "http://localhost:3000" : "");
 
 export function useLogin() {
-  const loginusers = async (username, email) => {
-    if (!username || !email) {
-      toast.error("Username or email missing");
-      return;
+  const loginusers = async (clerkUserId, username, email) => {
+    if (!clerkUserId) {
+      return; // Clerk not ready yet
     }
     try {
-      const response = await axios.post(`${BASE_URL}/api/users/login`, {
+      await axios.post(`${BASE_URL}/api/users/login`, {
+        clerkUserId,
         username,
         email,
       });
-    //   toast.success("User created successfully");
-      console.log("Backend response:", response.data);
+      console.log("User synced to backend.");
     } catch (error) {
-    //   toast.error("User not created");
-      console.log("API error:", error.response ? error.response.data : error.message);
+      console.log("Backend sync error:", error.response ? error.response.data : error.message);
     }
   };
 

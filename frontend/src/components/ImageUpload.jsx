@@ -2,7 +2,7 @@ import { useRef, useState } from "react";
 import { ImageIcon, UploadIcon, XIcon } from "lucide-react";
 import toast from "react-hot-toast";
 import axios from "axios";
-const BASE_URL = import.meta.env.VITE_BACKEND_URL;
+const BASE_URL = import.meta.env.VITE_BACKEND_URL || (import.meta.env.DEV ? "http://localhost:3000" : "");
 
 function ImageUpload({ value, onChange, disabled = false }) {
   const fileInputRef = useRef(null);

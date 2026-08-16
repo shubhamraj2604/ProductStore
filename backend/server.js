@@ -89,9 +89,9 @@ app.get("/", (_req, res) => {
 if (process.env.NODE_ENV === "production") {
   const distPath = path.join(__dirname, "..", "frontend", "dist");
 
-  console.log("NODE_ENV =", process.env.NODE_ENV);
-  console.log("__dirname =", __dirname);
-  console.log("distPath =", distPath);
+  // console.log("NODE_ENV =", process.env.NODE_ENV);
+  // console.log("__dirname =", __dirname);
+  // console.log("distPath =", distPath);
 
   console.log(
     "index exists:",
@@ -106,60 +106,111 @@ if (process.env.NODE_ENV === "production") {
   });
 }
 
-async function initDb(params) {
-    try{
-      await sql`
+async function initDb() {
+  try {
+    // ── Create tables only if they don't already exist (safe on every restart) ─
+    await sql`
+      CREATE TABLE IF NOT EXISTS users (
+        id            BIGSERIAL PRIMARY KEY,
+        clerk_user_id VARCHAR(255) NOT NULL UNIQUE,
+        username      VARCHAR(255),
+        email         VARCHAR(255) UNIQUE,
+        created_at    TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
+      )
+    `;
+
+    await sql`
+      CREATE TABLE IF NOT EXISTS categories (
+        id   BIGSERIAL PRIMARY KEY,
+        name VARCHAR(100) NOT NULL UNIQUE,
+        slug VARCHAR(120) NOT NULL UNIQUE
+      )
+    `;
+
+    await sql`
       CREATE TABLE IF NOT EXISTS products (
-      id SERIAL PRIMARY KEY,
-      name VARCHAR(255) NOT NULL,
-      image TEXT NOT NULL,
-      price DECIMAL(10,2) NOT NULL,
-      created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-    )
+        id          BIGSERIAL PRIMARY KEY,
+        category_id BIGINT REFERENCES categories(id) ON DELETE SET NULL,
+        name        VARCHAR(255) NOT NULL,
+        price_cents INTEGER      NOT NULL CHECK (price_cents >= 0),
+        is_active   BOOLEAN      NOT NULL DEFAULT TRUE,
+        created_at  TIMESTAMP    NOT NULL DEFAULT CURRENT_TIMESTAMP
+      )
     `;
 
     await sql`
-    ALTER TABLE products
-    ADD COLUMN IF NOT EXISTS category VARCHAR(100) NOT NULL DEFAULT 'General';
+      CREATE TABLE IF NOT EXISTS product_images (
+        id         BIGSERIAL PRIMARY KEY,
+        product_id BIGINT NOT NULL REFERENCES products(id) ON DELETE CASCADE,
+        image_url  TEXT   NOT NULL,
+        is_primary BOOLEAN NOT NULL DEFAULT FALSE
+      )
     `;
 
     await sql`
-    CREATE TABLE IF NOT EXISTS users (
-      id SERIAL PRIMARY KEY,
-      username VARCHAR(255) NOT NULL,
-      email VARCHAR(255) NOT NULL UNIQUE,
-      created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-    )`
+      CREATE TABLE IF NOT EXISTS carts (
+        id         BIGSERIAL PRIMARY KEY,
+        user_id    BIGINT NOT NULL UNIQUE REFERENCES users(id) ON DELETE CASCADE,
+        updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
+      )
+    `;
 
     await sql`
-    CREATE TABLE IF NOT EXISTS carts (
-      id SERIAL PRIMARY KEY,
-      clerk_user_id VARCHAR(255) NOT NULL UNIQUE,
-      email VARCHAR(255),
-      items JSONB NOT NULL DEFAULT '[]'::jsonb,
-      updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-    )`
+      CREATE TABLE IF NOT EXISTS cart_items (
+        id         BIGSERIAL PRIMARY KEY,
+        cart_id    BIGINT  NOT NULL REFERENCES carts(id)    ON DELETE CASCADE,
+        product_id BIGINT  NOT NULL REFERENCES products(id) ON DELETE RESTRICT,
+        quantity   INTEGER NOT NULL CHECK (quantity > 0),
+        UNIQUE (cart_id, product_id)
+      )
+    `;
 
     await sql`
-    CREATE INDEX IF NOT EXISTS idx_carts_clerk_user_id ON carts (clerk_user_id)
-    `
+      CREATE TABLE IF NOT EXISTS orders (
+        id                       BIGSERIAL PRIMARY KEY,
+        user_id                  BIGINT REFERENCES users(id) ON DELETE SET NULL,
+        status                   VARCHAR(32)  NOT NULL,
+        currency                 VARCHAR(10)  NOT NULL DEFAULT 'usd',
+        subtotal_cents           INTEGER      NOT NULL DEFAULT 0 CHECK (subtotal_cents >= 0),
+        tax_cents                INTEGER      NOT NULL DEFAULT 0 CHECK (tax_cents >= 0),
+        total_cents              INTEGER      NOT NULL DEFAULT 0 CHECK (total_cents >= 0),
+        customer_email           VARCHAR(255),
+        stripe_session_id        VARCHAR(255) UNIQUE,
+        stripe_payment_intent_id VARCHAR(255) UNIQUE,
+        created_at               TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+        updated_at               TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
+      )
+    `;
+
     await sql`
-    CREATE TABLE IF NOT EXISTS orders (
-      id SERIAL PRIMARY KEY,
-      stripe_session_id VARCHAR(255) NOT NULL UNIQUE,
-      payment_intent_id VARCHAR(255),
-      payment_status VARCHAR(50) NOT NULL,
-      amount_total INTEGER NOT NULL DEFAULT 0,
-      currency VARCHAR(10) NOT NULL DEFAULT 'usd',
-      customer_email VARCHAR(255),
-      items JSONB NOT NULL DEFAULT '[]'::jsonb,
-      created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-      updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-    )`
-    console.log("DATABASE INITIALIZED SUCCESSfullly")
-    }catch(error){
-        console.log("error",error);
-    }
+      CREATE TABLE IF NOT EXISTS order_items (
+        id                    BIGSERIAL PRIMARY KEY,
+        order_id              BIGINT NOT NULL REFERENCES orders(id) ON DELETE CASCADE,
+        product_id            BIGINT REFERENCES products(id) ON DELETE SET NULL,
+        product_name_snapshot VARCHAR(255) NOT NULL,
+        unit_price_cents      INTEGER NOT NULL CHECK (unit_price_cents >= 0),
+        quantity              INTEGER NOT NULL CHECK (quantity > 0),
+        line_total_cents      INTEGER NOT NULL CHECK (line_total_cents >= 0)
+      )
+    `;
+
+    await sql`
+      CREATE TABLE IF NOT EXISTS payments (
+        id                  BIGSERIAL PRIMARY KEY,
+        order_id            BIGINT NOT NULL REFERENCES orders(id) ON DELETE CASCADE,
+        provider            VARCHAR(50)  NOT NULL,
+        provider_payment_id VARCHAR(255),
+        amount_cents        INTEGER NOT NULL CHECK (amount_cents >= 0),
+        status              VARCHAR(32) NOT NULL,
+        paid_at             TIMESTAMP,
+        raw_payload         JSONB
+      )
+    `;
+
+    console.log("DATABASE INITIALIZED SUCCESSFULLY — normalized schema ready.");
+  } catch (error) {
+    console.error("DB init error:", error);
+  }
 }
 
 initDb().then(()=>{

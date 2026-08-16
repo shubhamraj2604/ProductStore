@@ -7,50 +7,100 @@ const stripeSecretKey = process.env.STRIPE_SECRET_KEY;
 const stripe = stripeSecretKey ? new Stripe(stripeSecretKey) : null;
 const webhookSecret = process.env.STRIPE_WEBHOOK_SECRET;
 
-const formatLineItems = (lineItems = []) =>
-  lineItems.map((item) => ({
-    description: item.description,
-    quantity: item.quantity,
-    amount_total: item.amount_total,
-    currency: item.currency,
-  }));
 
 async function saveCompletedOrder(session) {
-  const lineItems = await stripe.checkout.sessions.listLineItems(session.id, {
+  const lineItemsResponse = await stripe.checkout.sessions.listLineItems(session.id, {
     limit: 100,
   });
 
-  const items = formatLineItems(lineItems.data);
+  const customerEmail = session.customer_details?.email || session.customer_email || null;
+  const totalCents    = session.amount_total || 0;
 
-  await sql`
+  // Try to link the order to an existing user by email
+  let userId = null;
+  if (customerEmail) {
+    const userRows = await sql`SELECT id FROM users WHERE email = ${customerEmail} LIMIT 1`;
+    if (userRows.length > 0) userId = userRows[0].id;
+  }
+
+  // Upsert the order (idempotent — webhook may fire more than once)
+  const [order] = await sql`
     INSERT INTO orders (
-      stripe_session_id,
-      payment_intent_id,
-      payment_status,
-      amount_total,
+      user_id,
+      status,
       currency,
+      total_cents,
       customer_email,
-      items
+      stripe_session_id,
+      stripe_payment_intent_id
     )
     VALUES (
-      ${session.id},
-      ${session.payment_intent || null},
+      ${userId},
       ${session.payment_status || "paid"},
-      ${session.amount_total || 0},
       ${session.currency || "usd"},
-      ${session.customer_details?.email || session.customer_email || null},
-      ${JSON.stringify(items)}::jsonb
+      ${totalCents},
+      ${customerEmail},
+      ${session.id},
+      ${session.payment_intent || null}
     )
     ON CONFLICT (stripe_session_id) DO UPDATE SET
-      payment_intent_id = EXCLUDED.payment_intent_id,
-      payment_status = EXCLUDED.payment_status,
-      amount_total = EXCLUDED.amount_total,
-      currency = EXCLUDED.currency,
-      customer_email = EXCLUDED.customer_email,
-      items = EXCLUDED.items,
-      updated_at = CURRENT_TIMESTAMP
+      status                   = EXCLUDED.status,
+      stripe_payment_intent_id = EXCLUDED.stripe_payment_intent_id,
+      customer_email           = EXCLUDED.customer_email,
+      updated_at               = CURRENT_TIMESTAMP
+    RETURNING id
   `;
+
+  // Insert order_items (only on first insert — skip if order already had items)
+  const existingItems = await sql`SELECT id FROM order_items WHERE order_id = ${order.id} LIMIT 1`;
+  if (existingItems.length === 0) {
+    for (const item of lineItemsResponse.data) {
+      const qty          = item.quantity || 1;
+      const lineTotalCents = item.amount_total || 0;
+      const unitCents    = Math.round(lineTotalCents / qty);
+
+      await sql`
+        INSERT INTO order_items (
+          order_id,
+          product_name_snapshot,
+          unit_price_cents,
+          quantity,
+          line_total_cents
+        )
+        VALUES (
+          ${order.id},
+          ${item.description || "Unknown item"},
+          ${unitCents},
+          ${qty},
+          ${lineTotalCents}
+        )
+      `;
+    }
+
+    // Record the payment
+    await sql`
+      INSERT INTO payments (
+        order_id,
+        provider,
+        provider_payment_id,
+        amount_cents,
+        status,
+        paid_at,
+        raw_payload
+      )
+      VALUES (
+        ${order.id},
+        'stripe',
+        ${session.payment_intent || null},
+        ${totalCents},
+        'paid',
+        CURRENT_TIMESTAMP,
+        ${JSON.stringify(session)}::jsonb
+      )
+    `;
+  }
 }
+
 
 router.post("/create-checkout-session", async (req, res) => {
   try {
